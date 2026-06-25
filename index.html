@@ -6,102 +6,183 @@
 <title>TANDEO Briefing</title>
 <style>
   :root{
-    --navy:#1A3550; --teal:#0A8B7F; --sand:#F5F0E8;
-    --navy-soft:#23425f; --line:#e3dccd; --ink:#22303d; --muted:#6c7a86;
+    --teal:#0A8B7F; --teal-bright:#19c2b1;
+    --bg0:#0d1117; --bg1:#121922; --bg2:#161f2b;
+    --card:rgba(28,39,54,.72);
+    --card-accent:rgba(13,90,82,.30);
+    --border:rgba(255,255,255,.09);
+    --border-soft:rgba(255,255,255,.06);
+    --ink:#e8edf2; --ink-soft:#aeb9c4; --muted:#7b8794;
+    --shadow:0 10px 34px rgba(0,0,0,.40), 0 2px 8px rgba(0,0,0,.30);
+    --shadow-lift:0 18px 48px rgba(0,0,0,.50), 0 4px 12px rgba(0,0,0,.35);
   }
   *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
   body{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--sand); color:var(--ink); line-height:1.45;
-    -webkit-font-smoothing:antialiased;
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); line-height:1.45; -webkit-font-smoothing:antialiased; min-height:100vh;
+    background:
+      radial-gradient(1100px 560px at 8% -6%, rgba(10,139,127,.20), transparent 58%),
+      radial-gradient(1000px 600px at 96% 2%, rgba(26,53,80,.42), transparent 55%),
+      radial-gradient(900px 760px at 82% 110%, rgba(10,139,127,.12), transparent 60%),
+      linear-gradient(165deg, var(--bg1) 0%, var(--bg0) 55%, #0a0e14 100%);
+    background-attachment:fixed;
   }
   a{color:inherit; text-decoration:none}
+
+  /* HEADER */
   header{
-    background:var(--navy); color:#fff; padding:18px 28px;
-    display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:8px;
+    position:sticky; top:0; z-index:50;
+    backdrop-filter:saturate(180%) blur(22px); -webkit-backdrop-filter:saturate(180%) blur(22px);
+    background:rgba(13,17,23,.78);
+    color:#fff; padding:14px 32px;
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;
+    border-bottom:1px solid var(--border);
   }
-  .brand{font-size:22px; font-weight:700; letter-spacing:.5px}
-  .brand .tan{color:#fff} .brand .deo{color:var(--teal)}
-  .brand .sub{font-size:13px; font-weight:400; color:#b9c4ce; margin-left:12px}
-  .clock{font-size:14px; color:#cdd6de; font-variant-numeric:tabular-nums}
-  main{max-width:1280px; margin:0 auto; padding:22px}
+  .brand{font-size:22px; font-weight:700; letter-spacing:.3px; display:flex; align-items:center; gap:11px}
+  .brand .mark{
+    width:26px;height:26px;border-radius:8px;
+    background:linear-gradient(135deg,#fff 0 50%, var(--teal-bright) 50% 100%);
+    box-shadow:0 2px 10px rgba(25,194,177,.4);
+  }
+  .brand .tan{color:#fff} .brand .deo{color:var(--teal-bright)}
+  .brand .sub{font-size:12px; font-weight:500; color:var(--muted); letter-spacing:.6px; text-transform:uppercase}
+  .head-right{display:flex; align-items:center; gap:14px}
+  .clock{font-size:13.5px; color:var(--ink-soft); font-variant-numeric:tabular-nums; letter-spacing:.2px}
+  .refresh{
+    background:linear-gradient(135deg,var(--teal),var(--teal-bright)); color:#04201d; border:none;
+    border-radius:10px; padding:8px 16px; font-size:13px; font-weight:700; cursor:pointer;
+    box-shadow:0 4px 16px rgba(25,194,177,.32); transition:transform .15s, box-shadow .15s;
+  }
+  .refresh:hover{transform:translateY(-1px); box-shadow:0 6px 20px rgba(25,194,177,.45)}
+  .refresh:active{transform:translateY(0)}
+
+  main{max-width:1340px; margin:0 auto; padding:30px 26px 8px}
+
+  /* SECTION TITLES */
+  .section-title{
+    display:flex; align-items:center; gap:13px; margin:6px 2px 18px;
+    font-size:27px; font-weight:700; letter-spacing:-.3px; color:#fff;
+  }
+  .section-title .emoji{font-size:30px; line-height:1; filter:drop-shadow(0 3px 8px rgba(0,0,0,.4))}
+  .section-title .accent{color:var(--teal-bright); font-weight:700}
+  .section-title.small{font-size:22px; margin-top:30px}
 
   /* WEATHER */
-  .weather-row{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:26px}
+  .weather-row{display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-bottom:14px}
   @media(max-width:760px){.weather-row{grid-template-columns:1fr}}
   .wcard{
-    background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden;
-    box-shadow:0 1px 3px rgba(26,53,80,.06);
+    background:var(--card); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    border:1px solid var(--border); border-radius:22px; overflow:hidden;
+    box-shadow:var(--shadow); transition:transform .25s, box-shadow .25s;
   }
+  .wcard:hover{transform:translateY(-3px); box-shadow:var(--shadow-lift)}
   .wtop{
-    background:linear-gradient(135deg,var(--navy),var(--navy-soft));
-    color:#fff; padding:16px 20px; display:flex; align-items:center; justify-content:space-between;
+    padding:16px 22px; display:flex; align-items:center; justify-content:space-between;
+    border-bottom:1px solid var(--border-soft);
+    background:linear-gradient(135deg, rgba(10,139,127,.20), rgba(26,53,80,.18));
   }
-  .wtop .loc{font-size:17px; font-weight:600}
-  .wtop .loc small{display:block; font-weight:400; color:#aebbc6; font-size:12px; margin-top:2px}
-  .wnow{display:flex; align-items:center; gap:14px; padding:18px 20px}
-  .wicon{font-size:46px; line-height:1}
-  .wtemp{font-size:42px; font-weight:700; color:var(--navy); font-variant-numeric:tabular-nums}
-  .wmeta{font-size:13px; color:var(--muted); margin-top:2px}
-  .wmeta b{color:var(--ink); font-weight:600}
-  .wfore{display:grid; grid-template-columns:repeat(5,1fr); border-top:1px solid var(--line)}
-  .wday{padding:12px 6px; text-align:center; border-right:1px solid var(--line)}
-  .wday:last-child{border-right:none}
-  .wday .d{font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.3px}
-  .wday .i{font-size:24px; margin:6px 0}
+  .wtop .loc{font-size:17px; font-weight:600; letter-spacing:.2px; color:#fff}
+  .wtop .loc small{display:block; font-weight:400; color:var(--muted); font-size:12px; margin-top:3px; letter-spacing:.3px}
+  .wtop .pin{font-size:19px; opacity:.9}
+  .wnow{display:flex; align-items:center; gap:18px; padding:22px}
+  .wicon{font-size:56px; line-height:1; filter:drop-shadow(0 4px 12px rgba(0,0,0,.4))}
+  .wtemp{font-size:50px; font-weight:700; color:#fff; font-variant-numeric:tabular-nums; letter-spacing:-1.5px; line-height:1}
+  .wcond{font-size:14px; color:var(--teal-bright); font-weight:600; margin-top:4px}
+  .wmeta{font-size:13px; color:var(--ink-soft); margin-top:5px}
+  .wmeta b{color:#fff; font-weight:600}
+  .wfore{display:grid; grid-template-columns:repeat(5,1fr); border-top:1px solid var(--border-soft)}
+  .wday{padding:15px 6px; text-align:center; position:relative}
+  .wday:not(:last-child)::after{content:""; position:absolute; right:0; top:18%; height:64%; width:1px; background:var(--border-soft)}
+  .wday .d{font-size:11px; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:.5px}
+  .wday .i{font-size:27px; margin:9px 0; filter:drop-shadow(0 2px 8px rgba(0,0,0,.35))}
   .wday .t{font-size:13px; font-variant-numeric:tabular-nums}
-  .wday .t .hi{font-weight:700; color:var(--navy)}
-  .wday .t .lo{color:var(--muted)}
+  .wday .t .hi{font-weight:700; color:#fff}
+  .wday .t .lo{color:var(--muted); margin-left:2px}
 
   /* NEWS */
-  .news-grid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:18px}
-  @media(max-width:980px){.news-grid{grid-template-columns:1fr 1fr}}
-  @media(max-width:640px){.news-grid{grid-template-columns:1fr}}
-  .col-title{
-    font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px;
-    color:var(--teal); padding:0 2px 8px; border-bottom:2px solid var(--teal); margin-bottom:6px;
+  .news-block{margin-bottom:8px}
+  .news-cols{display:grid; gap:22px}
+  .news-cols.c1{grid-template-columns:1fr}
+  .news-cols.c2{grid-template-columns:1fr 1fr}
+  @media(max-width:760px){.news-cols.c2{grid-template-columns:1fr}}
+
+  .src{
+    background:var(--card); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    border:1px solid var(--border); border-radius:18px; overflow:hidden;
+    box-shadow:var(--shadow); transition:transform .22s, box-shadow .22s; height:fit-content;
   }
-  .src{background:#fff; border:1px solid var(--line); border-radius:12px; margin-bottom:14px; overflow:hidden}
+  .src:hover{transform:translateY(-2px); box-shadow:var(--shadow-lift)}
   .src h3{
-    font-size:13px; font-weight:700; color:var(--navy); padding:10px 14px;
-    background:var(--sand); border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;
+    font-size:12px; font-weight:700; color:var(--teal-bright); padding:12px 18px;
+    text-transform:uppercase; letter-spacing:1px;
+    background:linear-gradient(180deg, rgba(10,139,127,.16), rgba(10,139,127,.04));
+    border-bottom:1px solid var(--border-soft);
+    display:flex; justify-content:space-between; align-items:center;
   }
-  .src h3 .badge{font-size:10px; font-weight:600; color:var(--muted); text-transform:none; letter-spacing:0}
+  .src h3 .badge{
+    font-size:11px; font-weight:700; color:var(--teal-bright);
+    background:rgba(25,194,177,.16); border-radius:20px; padding:2px 9px; min-width:22px; text-align:center; letter-spacing:0;
+  }
   .src ul{list-style:none}
-  .src li{border-top:1px solid var(--line)}
+  .src li{border-top:1px solid var(--border-soft)}
   .src li:first-child{border-top:none}
-  .src li a{display:block; padding:9px 14px; font-size:13.5px; transition:background .12s}
-  .src li a:hover{background:#f3f7f6}
-  .src li a .meta{display:block; font-size:11px; color:var(--muted); margin-top:2px}
-  .loading,.error{padding:12px 14px; font-size:12.5px; color:var(--muted)}
-  .error{color:#a23b3b}
-  footer{text-align:center; padding:20px; font-size:12px; color:var(--muted)}
-  .refresh{
-    background:var(--teal); color:#fff; border:none; border-radius:8px; padding:7px 14px;
-    font-size:13px; font-weight:600; cursor:pointer; margin-left:14px;
+  .src li a{
+    display:block; padding:12px 18px; font-size:14px; line-height:1.45; color:var(--ink);
+    transition:background .14s, padding-left .14s; position:relative;
   }
-  .refresh:hover{background:#097a6f}
+  .src li a:hover{background:rgba(25,194,177,.08); padding-left:23px}
+  .src li a::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--teal-bright); opacity:0; transition:opacity .14s;
+  }
+  .src li a:hover::before{opacity:1}
+  .src li a .meta{display:block; font-size:11px; color:var(--muted); margin-top:4px; letter-spacing:.2px}
+  .error{padding:14px 18px; font-size:12.5px; color:#e0808a}
+
+  /* SKELETON */
+  .skeleton{padding:8px 18px 16px}
+  .sk-line{
+    height:11px; border-radius:6px; margin:12px 0;
+    background:linear-gradient(90deg, rgba(255,255,255,.05) 25%, rgba(255,255,255,.11) 37%, rgba(255,255,255,.05) 63%);
+    background-size:400% 100%; animation:shimmer 1.4s ease infinite;
+  }
+  .sk-line.short{width:55%}
+  @keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+
+  .fade-in{animation:fadeUp .45s ease both}
+  @keyframes fadeUp{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:translateY(0)}}
+
+  footer{text-align:center; padding:28px 20px 34px; font-size:12px; color:var(--muted); letter-spacing:.2px}
+  footer span{color:var(--ink-soft); font-weight:600}
 </style>
 </head>
 <body>
 <header>
-  <div class="brand"><span class="tan">TAN</span><span class="deo">DEO</span><span class="sub">Briefing</span></div>
-  <div><span class="clock" id="clock"></span><button class="refresh" onclick="loadAll()">Aktualisieren</button></div>
+  <div class="brand">
+    <span class="mark"></span>
+    <span><span class="tan">TAN</span><span class="deo">DEO</span></span>
+    <span class="sub">Briefing</span>
+  </div>
+  <div class="head-right">
+    <span class="clock" id="clock"></span>
+    <button class="refresh" onclick="loadAll()">Aktualisieren</button>
+  </div>
 </header>
 
 <main>
+  <h2 class="section-title" id="weather-title"><span class="emoji">🌡️</span><span>Wetter</span></h2>
   <section class="weather-row">
     <div class="wcard" id="w-willich">
-      <div class="wtop"><div class="loc">Willich<small>Nordrhein-Westfalen, DE</small></div></div>
-      <div class="wnow"><div class="loading">Lade Wetter…</div></div>
+      <div class="wtop"><div class="loc">Willich<small>Nordrhein-Westfalen, DE</small></div><div class="pin">📍</div></div>
+      <div class="wnow"><div class="skeleton" style="width:100%"><div class="sk-line"></div><div class="sk-line short"></div></div></div>
     </div>
     <div class="wcard" id="w-andratx">
-      <div class="wtop"><div class="loc">Port d'Andratx<small>Mallorca, ES</small></div></div>
-      <div class="wnow"><div class="loading">Lade Wetter…</div></div>
+      <div class="wtop"><div class="loc">Port d'Andratx<small>Mallorca, ES</small></div><div class="pin">📍</div></div>
+      <div class="wnow"><div class="skeleton" style="width:100%"><div class="sk-line"></div><div class="sk-line short"></div></div></div>
     </div>
   </section>
 
-  <section class="news-grid" id="news"></section>
+  <div id="news"></div>
 </main>
 
 <footer>TANDEO Briefing · Wetter: Open-Meteo · News via RSS · zuletzt aktualisiert <span id="updated">–</span></footer>
@@ -114,18 +195,18 @@ const LOCATIONS = [
 ];
 
 const COLUMNS = [
-  {title:"Wirtschaft", sources:[
+  {title:"Wirtschaft", emoji:"📊", sources:[
     {name:"Handelsblatt", url:"https://www.handelsblatt.com/contentexport/feed/wirtschaft"},
     {name:"NZZ Wirtschaft", url:"https://www.nzz.ch/wirtschaft.rss"},
     {name:"WELT Wirtschaft", url:"https://www.welt.de/feeds/section/wirtschaft.rss"}
   ]},
-  {title:"Politik", sources:[
+  {title:"Politik", emoji:"🏛️", sources:[
     {name:"tagesschau", url:"https://www.tagesschau.de/index~rss2.xml"},
     {name:"NZZ International", url:"https://www.nzz.ch/international.rss"},
     {name:"WELT Politik", url:"https://www.welt.de/feeds/section/politik.rss"},
     {name:"CNN World", url:"https://rss.cnn.com/rss/edition_world.rss"}
   ]},
-  {title:"Sport", sources:[
+  {title:"Sport", emoji:"🏆", sources:[
     {name:"kicker · Bundesliga", url:"https://newsfeed.kicker.de/news/bundesliga"},
     {name:"Formel 1 · motorsport.com", url:"https://www.motorsport.com/rss/f1/news/"},
     {name:"ESPN · Golf", url:"https://www.espn.com/espn/rss/golf/news"}
@@ -136,7 +217,6 @@ const PER_SOURCE = 5;
 
 /* ====================================================================
    HIER DEINE WORKER-URL EINTRAGEN (mit ?url= am Ende, ohne Klammern):
-   z.B. "https://tandeo-rss.deinname.workers.dev/?url="
    ==================================================================== */
 const PROXY = "https://tandeo-rss.marcus-wolf.workers.dev/?url=";
 
@@ -154,6 +234,17 @@ const wIcon = c => (WMO[c]||["🌡️","—"])[0];
 const wText = c => (WMO[c]||["","—"])[1];
 const DAYS = ["So","Mo","Di","Mi","Do","Fr","Sa"];
 
+/* Sprechender Wettertitel je nach Spitzenwert über beide Orte */
+function weatherHeadline(maxTemp, anyStorm, anyRain){
+  if(anyStorm) return ["⛈️","Wetter: ", "Gewittrig"];
+  if(maxTemp>=35) return ["🥵","Wetter: ", "Extreme Hitze"];
+  if(maxTemp>=30) return ["☀️","Wetter: ", "Sehr warm"];
+  if(anyRain) return ["🌧️","Wetter: ", "Wechselhaft"];
+  if(maxTemp<=3) return ["❄️","Wetter: ", "Frostig"];
+  return ["🌤️","Wetter", ""];
+}
+let wAgg = {maxTemp:-99, storm:false, rain:false, done:0};
+
 async function loadWeather(loc){
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}`
     + `&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m`
@@ -165,16 +256,22 @@ async function loadWeather(loc){
     if(!r.ok) throw new Error(r.status);
     const d = await r.json();
     const c = d.current;
+    // Aggregat für Titel
+    wAgg.maxTemp = Math.max(wAgg.maxTemp, c.temperature_2m, ...d.daily.temperature_2m_max);
+    const codes = [c.weather_code, ...d.daily.weather_code];
+    if(codes.some(x=>x>=95)) wAgg.storm=true;
+    if(codes.some(x=>x>=51 && x<95)) wAgg.rain=true;
+
     const now = `
-      <div class="wnow">
+      <div class="wnow fade-in">
         <div class="wicon">${wIcon(c.weather_code)}</div>
         <div>
           <div class="wtemp">${Math.round(c.temperature_2m)}°</div>
-          <div class="wmeta">${wText(c.weather_code)} · gefühlt <b>${Math.round(c.apparent_temperature)}°</b></div>
-          <div class="wmeta">💧 ${c.relative_humidity_2m}% · 💨 ${Math.round(c.wind_speed_10m)} km/h</div>
+          <div class="wcond">${wText(c.weather_code)}</div>
+          <div class="wmeta">gefühlt <b>${Math.round(c.apparent_temperature)}°</b> · 💧 ${c.relative_humidity_2m}% · 💨 ${Math.round(c.wind_speed_10m)} km/h</div>
         </div>
       </div>`;
-    let fore = '<div class="wfore">';
+    let fore = '<div class="wfore fade-in">';
     for(let i=0;i<d.daily.time.length;i++){
       const dt = new Date(d.daily.time[i]+"T12:00");
       fore += `<div class="wday">
@@ -188,6 +285,13 @@ async function loadWeather(loc){
     card.querySelector('.wnow').outerHTML = now + fore;
   }catch(e){
     card.querySelector('.wnow').innerHTML = `<div class="error">Wetter nicht erreichbar (${e.message})</div>`;
+  }finally{
+    wAgg.done++;
+    if(wAgg.done>=LOCATIONS.length){
+      const [emo,pre,acc] = weatherHeadline(wAgg.maxTemp, wAgg.storm, wAgg.rain);
+      document.getElementById('weather-title').innerHTML =
+        `<span class="emoji">${emo}</span><span>${pre}${acc?`<span class="accent">${acc}</span>`:''}</span>`;
+    }
   }
 }
 
@@ -200,10 +304,12 @@ function timeAgo(date){
   return Math.floor(s/86400)+" Tg";
 }
 
+const SKELETON = '<div class="skeleton"><div class="sk-line"></div><div class="sk-line"></div><div class="sk-line short"></div></div>';
+
 async function loadSource(src, container){
   const box = document.createElement('div');
   box.className = 'src';
-  box.innerHTML = `<h3>${src.name}<span class="badge">…</span></h3><div class="loading">Lade…</div>`;
+  box.innerHTML = `<h3>${src.name}<span class="badge">…</span></h3>${SKELETON}`;
   container.appendChild(box);
   try{
     const r = await fetch(PROXY + encodeURIComponent(src.url));
@@ -211,9 +317,9 @@ async function loadSource(src, container){
     const txt = await r.text();
     const xml = new DOMParser().parseFromString(txt, "text/xml");
     let items = [...xml.querySelectorAll("item")];
-    if(items.length===0) items = [...xml.querySelectorAll("entry")]; // Atom
+    if(items.length===0) items = [...xml.querySelectorAll("entry")];
     if(items.length===0) throw new Error("leer");
-    let html = '<ul>';
+    let html = '<ul class="fade-in">';
     items.slice(0,PER_SOURCE).forEach(it=>{
       const title = (it.querySelector("title")?.textContent||"").trim();
       let link = it.querySelector("link")?.textContent?.trim();
@@ -230,14 +336,26 @@ async function loadSource(src, container){
   }
 }
 
+function srcShort(name){ return name.split('·')[0].trim(); }
+
 async function loadNews(){
-  const grid = document.getElementById('news');
-  grid.innerHTML = '';
+  const root = document.getElementById('news');
+  root.innerHTML = '';
   COLUMNS.forEach(col=>{
-    const c = document.createElement('div');
-    c.innerHTML = `<div class="col-title">${col.title}</div>`;
-    grid.appendChild(c);
-    col.sources.forEach(src=> loadSource(src, c));
+    const block = document.createElement('div');
+    block.className = 'news-block';
+    const srcNames = col.sources.map(s=>srcShort(s.name)).slice(0,2).join(' & ');
+    block.innerHTML = `<h2 class="section-title small"><span class="emoji">${col.emoji}</span>
+      <span>${col.title}: <span class="accent">${srcNames}</span></span></h2>`;
+    const cols = document.createElement('div');
+    cols.className = 'news-cols ' + (col.sources.length>1 ? 'c2' : 'c1');
+    block.appendChild(cols);
+    root.appendChild(block);
+    // verteile Quellen auf zwei Spalten
+    const left = document.createElement('div');
+    const right = document.createElement('div');
+    cols.appendChild(left); cols.appendChild(right);
+    col.sources.forEach((src,i)=> loadSource(src, i%2===0?left:right));
   });
 }
 
@@ -249,6 +367,7 @@ function tick(){
     n.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
 }
 function loadAll(){
+  wAgg = {maxTemp:-99, storm:false, rain:false, done:0};
   LOCATIONS.forEach(loadWeather);
   loadNews();
   document.getElementById('updated').textContent =
@@ -256,7 +375,7 @@ function loadAll(){
 }
 tick(); setInterval(tick,30000);
 loadAll();
-setInterval(loadAll, 15*60*1000); // alle 15 Min
+setInterval(loadAll, 15*60*1000);
 </script>
 </body>
 </html>
