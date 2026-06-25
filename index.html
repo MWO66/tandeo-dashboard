@@ -1,266 +1,87 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TANDEO Dashboard</title>
 
-<title>TANDEO Dashboard</title>
-
-<style>
-
-:root{
-    --bg1:#0f172a;
-    --bg2:#0c4a6e;
-    --card:rgba(255,255,255,.08);
-    --card-hover:rgba(255,255,255,.12);
-    --border:rgba(255,255,255,.1);
-    --accent:#7dd3fc;
-}
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    font-family:"Segoe UI",Arial,sans-serif;
-    color:white;
-    min-height:100vh;
-    padding:25px;
-    background:
-    linear-gradient(
-    135deg,
-    var(--bg1),
-    #1e293b,
-    var(--bg2));
-}
-
-.header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:25px;
-    flex-wrap:wrap;
-}
-
-.welcome{
-    margin-top:8px;
-    opacity:.8;
-}
-
-#clock{
-    font-size:2.8rem;
-    font-weight:700;
-    text-align:right;
-}
-
-#date{
-    text-align:right;
-    opacity:.8;
-}
-
-.search{
-    margin-bottom:25px;
-}
-
-.search input{
-    width:100%;
-    padding:18px 20px;
-    border:none;
-    border-radius:18px;
-    font-size:18px;
-}
-
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(380px,1fr));
-    gap:20px;
-}
-
-.card{
-    background:var(--card);
-    backdrop-filter:blur(20px);
-    border:1px solid var(--border);
-    border-radius:24px;
-    padding:20px;
-    transition:.2s;
-}
-
-.card:hover{
-    background:var(--card-hover);
-}
-
-.card h2{
-    color:var(--accent);
-    margin-bottom:15px;
-}
-
-.weather-top p{
-    margin:5px 0;
-}
-
-.forecast{
-    margin-top:15px;
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:8px;
-}
-
-.forecast-day{
-    background:rgba(255,255,255,.06);
-    padding:10px;
-    border-radius:12px;
-    text-align:center;
-    font-size:.9rem;
-}
-
-.links{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
-}
-
-.links a{
-    text-decoration:none;
-    color:white;
-    background:#334155;
-    padding:12px;
-    border-radius:12px;
-    text-align:center;
-    transition:.2s;
-}
-
-.links a:hover{
-    background:#475569;
-    transform:translateY(-2px);
-}
-
-.news-placeholder{
-    line-height:1.8;
-    opacity:.9;
-}
-
-.footer{
-    margin-top:20px;
-    text-align:center;
-    opacity:.6;
-}
-
-@media(max-width:768px){
-
-    .forecast{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .header{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    #clock,#date{
-        text-align:left;
-    }
-}
-
-</style>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<div class="header">
+<header class="header">
 
-<div>
-<h1>🏢 TANDEO DASHBOARD</h1>
-<div class="welcome" id="welcome"></div>
-</div>
+    <div>
+        <h1>🏢 TANDEO DASHBOARD</h1>
+        <div id="welcome"></div>
+    </div>
 
-<div>
-<div id="clock"></div>
-<div id="date"></div>
-</div>
+    <div class="datetime">
+        <div id="clock"></div>
+        <div id="date"></div>
+    </div>
 
-</div>
+</header>
 
 <div class="search">
-
-<input
-placeholder="Mit Bing suchen ..."
-onkeypress="
-if(event.key==='Enter'){
-window.open(
-'https://www.bing.com/search?q='+
-encodeURIComponent(this.value),
-'_blank'
-);
-}">
+    <input
+        type="text"
+        placeholder="Mit Bing suchen ..."
+        onkeypress="if(event.key==='Enter'){window.open('https://www.bing.com/search?q='+encodeURIComponent(this.value),'_blank')}">
 </div>
 
 <div class="grid">
 
-<div class="card">
-<h2>🇩🇪 Willich</h2>
-<div id="willich">Lade Wetter...</div>
-</div>
+    <div class="card">
+        <h2>🇩🇪 Willich</h2>
+        <div id="willich">Lade Wetter ...</div>
+    </div>
 
-<div class="card">
-<h2>🇪🇸 Port d'Andratx</h2>
-<div id="andratx">Lade Wetter...</div>
-</div>
+    <div class="card">
+        <h2>🇪🇸 Port d'Andratx</h2>
+        <div id="andratx">Lade Wetter ...</div>
+    </div>
 
-<div class="card">
-<h2>📰 Nachrichten</h2>
+    <div class="card">
+        <h2>🛡 Administration</h2>
 
-<div class="news-placeholder">
+        <div class="links">
 
-🏛 Tagesschau<br>
-💶 Handelsblatt<br>
-⚽ Kicker<br>
-📰 SPIEGEL<br>
-📈 WirtschaftsWoche
+            <a href="https://admin.microsoft.com" target="_blank">Admin Center</a>
+            <a href="https://entra.microsoft.com" target="_blank">Entra</a>
 
-<br><br>
+            <a href="https://intune.microsoft.com" target="_blank">Intune</a>
+            <a href="https://security.microsoft.com" target="_blank">Defender</a>
 
-<small>
-In der nächsten Ausbaustufe werden hier
-automatisch Headlines angezeigt.
-</small>
+            <a href="https://portal.azure.com" target="_blank">Azure</a>
+            <a href="https://compliance.microsoft.com" target="_blank">Compliance</a>
 
-</div>
+            <a href="https://admin.exchange.microsoft.com" target="_blank">Exchange</a>
+            <a href="https://admin.teams.microsoft.com" target="_blank">Teams Admin</a>
 
-</div>
+        </div>
+    </div>
 
-<div class="card">
+    <div class="card">
+        <h2>⚡ Schnellzugriffe</h2>
 
-<h2>🛡 Administration</h2>
+        <div class="links">
 
-<div class="links">
+            <a href="https://github.com" target="_blank">GitHub</a>
+            <a href="https://onedrive.live.com" target="_blank">OneDrive</a>
 
-<a href="https://admin.microsoft.com" target="_blank">Admin Center</a>
-<a href="https://entra.microsoft.com" target="_blank">Entra</a>
+            <a href="https://outlook.office.com" target="_blank">Outlook</a>
+            <a href="https://teams.microsoft.com" target="_blank">Teams</a>
 
-<a href="https://intune.microsoft.com" target="_blank">Intune</a>
-<a href="https://security.microsoft.com" target="_blank">Defender</a>
+            <a href="https://powerbi.microsoft.com" target="_blank">Power BI</a>
+            <a href="https://learn.microsoft.com" target="_blank">Microsoft Learn</a>
 
-<a href="https://portal.azure.com" target="_blank">Azure</a>
-<a href="https://compliance.microsoft.com" target="_blank">Compliance</a>
-
-<a href="https://admin.exchange.microsoft.com" target="_blank">Exchange</a>
-<a href="https://admin.teams.microsoft.com" target="_blank">Teams Admin</a>
-
-<a href="https://admin.microsoft.com/sharepoint" target="_blank">SharePoint</a>
-<a href="https://admin.powerplatform.microsoft.com" target="_blank">Power Platform</a>
+        </div>
+    </div>
 
 </div>
 
-</div>
+<script src="app.js"></script>
 
-<div class="card">
-
-<h2>⚡ Schnellzugriffe</h2>
-
-<div class="links">
-
-<a href="https://github.com" target="_blank">GitHub</a>
-<a href="https://onedrive.live.com" target="_blank">OneDrive</a>
-
+</body>
+</html>
