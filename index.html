@@ -9,26 +9,25 @@
 <style>
 
 :root{
-    --bg1:#0f172a;
-    --bg2:#0c4a6e;
-    --card:rgba(255,255,255,0.08);
-    --border:rgba(255,255,255,0.1);
-    --text:#ffffff;
-    --accent:#0094ff;
+    --primary:#0078d4;
+    --bg:#0f172a;
+    --card:rgba(255,255,255,.08);
+    --border:rgba(255,255,255,.10);
+    --text:white;
 }
 
 *{
+    box-sizing:border-box;
     margin:0;
     padding:0;
-    box-sizing:border-box;
 }
 
 body{
-    font-family:"Segoe UI",sans-serif;
+    font-family:Segoe UI,Arial,sans-serif;
+    background:linear-gradient(135deg,#0f172a,#1e293b,#0c4a6e);
     color:var(--text);
     min-height:100vh;
-    background:linear-gradient(135deg,var(--bg1),#1e293b,var(--bg2));
-    padding:20px;
+    padding:30px;
 }
 
 .header{
@@ -36,11 +35,7 @@ body{
     justify-content:space-between;
     align-items:center;
     flex-wrap:wrap;
-    margin-bottom:20px;
-}
-
-h1{
-    font-size:2rem;
+    margin-bottom:25px;
 }
 
 #clock{
@@ -52,18 +47,21 @@ h1{
     opacity:.8;
 }
 
+.search{
+    margin-bottom:25px;
+}
+
 .search input{
     width:100%;
     padding:18px;
     border:none;
     border-radius:16px;
-    margin-bottom:20px;
     font-size:16px;
 }
 
 .grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(380px,1fr));
+    grid-template-columns:repeat(auto-fit,minmax(400px,1fr));
     gap:20px;
 }
 
@@ -80,24 +78,11 @@ h1{
     color:#7dd3fc;
 }
 
-.weather-block{
-    margin-bottom:15px;
-    padding-bottom:15px;
-    border-bottom:1px solid rgba(255,255,255,.1);
-}
-
-.forecast{
-    display:flex;
-    gap:10px;
+.weather-day{
     margin-top:10px;
-}
-
-.forecast-day{
-    flex:1;
-    background:rgba(255,255,255,.08);
     padding:10px;
+    background:rgba(255,255,255,.05);
     border-radius:10px;
-    text-align:center;
 }
 
 .links{
@@ -107,8 +92,8 @@ h1{
 }
 
 .links a{
-    text-decoration:none;
     color:white;
+    text-decoration:none;
     background:#334155;
     padding:12px;
     border-radius:10px;
@@ -119,21 +104,14 @@ h1{
     background:#475569;
 }
 
-.news-list{
-    list-style:none;
-}
-
-.news-list li{
-    padding:8px 0;
-    border-bottom:1px solid rgba(255,255,255,.08);
-}
-
-.news-list a{
+.news a{
+    display:block;
     color:white;
     text-decoration:none;
+    margin:10px 0;
 }
 
-.news-list a:hover{
+.news a:hover{
     color:#7dd3fc;
 }
 
@@ -144,7 +122,9 @@ h1{
 
 <div class="header">
 
+<div>
 <h1>🏢 TANDEO DASHBOARD</h1>
+</div>
 
 <div>
 <div id="clock"></div>
@@ -154,7 +134,9 @@ h1{
 </div>
 
 <div class="search">
+
 <input
+type="text"
 placeholder="Mit Bing suchen ..."
 onkeypress="
 if(event.key==='Enter'){
@@ -169,23 +151,17 @@ encodeURIComponent(this.value),
 <div class="grid">
 
 <div class="card">
-<h2>🌤 Wetter</h2>
-
-<div id="willich">
-Lade Wetter ...
-</div>
-
-<br>
-
-<div id="andratx">
-Lade Wetter ...
-</div>
-
+<h2>🌤 Wetter Willich</h2>
+<div id="willich">Lade Wetter...</div>
 </div>
 
 <div class="card">
+<h2>☀️ Wetter Port d'Andratx</h2>
+<div id="andratx">Lade Wetter...</div>
+</div>
 
-<h2>🛡 Microsoft Administration</h2>
+<div class="card">
+<h2>🛡 Administration</h2>
 
 <div class="links">
 
@@ -205,38 +181,41 @@ Intune
 Defender
 </a>
 
+<a href="https://portal.azure.com" target="_blank">
+Azure
+</a>
+
 <a href="https://compliance.microsoft.com" target="_blank">
 Compliance
 </a>
 
-<a href="https://purview.microsoft.com" target="_blank">
-Purview
+</div>
+
+</div>
+
+<div class="card news">
+<h2>📰 Nachrichten</h2>
+
+<a target="_blank"
+href="https://www.tagesschau.de">
+🏛 Tagesschau
 </a>
 
-</div>
+<a target="_blank"
+href="https://www.handelsblatt.com">
+💶 Handelsblatt
+</a>
 
-</div>
+<a target="_blank"
+href="https://www.kicker.de">
+⚽ Kicker
+</a>
 
+<a target="_blank"
+href="https://www.spiegel.de">
+📰 SPIEGEL
+</a>
 
-<div class="card">
-<h2>🏛 Politik</h2>
-<ul id="politik" class="news-list">
-<li>Lade Schlagzeilen ...</li>
-</ul>
-</div>
-
-<div class="card">
-<h2>💶 Wirtschaft</h2>
-<ul id="wirtschaft" class="news-list">
-<li>Lade Schlagzeilen ...</li>
-</ul>
-</div>
-
-<div class="card">
-<h2>⚽ Sport</h2>
-<ul id="sport" class="news-list">
-<li>Lade Schlagzeilen ...</li>
-</ul>
 </div>
 
 </div>
@@ -247,15 +226,15 @@ function updateClock(){
 
 const now = new Date();
 
-document.getElementById("clock").innerHTML =
-now.toLocaleTimeString("de-DE");
+document.getElementById('clock').innerHTML =
+now.toLocaleTimeString('de-DE');
 
-document.getElementById("date").innerHTML =
-now.toLocaleDateString("de-DE",{
-weekday:"long",
-day:"2-digit",
-month:"long",
-year:"numeric"
+document.getElementById('date').innerHTML =
+now.toLocaleDateString('de-DE',{
+weekday:'long',
+day:'2-digit',
+month:'long',
+year:'numeric'
 });
 
 }
@@ -264,95 +243,60 @@ setInterval(updateClock,1000);
 updateClock();
 
 
-async function loadLocationWeather(
-lat,
-lon,
-target,
-title,
-flag
-){
+async function weather(lat,lon,target){
 
 try{
 
-const url =
-`https://api.open-meteo.com/v1/forecast
-?latitude=${lat}
-&longitude=${lon}
-&current=temperature_2m,relative_humidity_2m,wind_speed_10m
-&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max
-&forecast_days=3`
-.replace(/\s/g,'');
+const url=
+`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&forecast_days=3`;
 
-const response = await fetch(url);
+const response=await fetch(url);
+const data=await response.json();
 
-const data = await response.json();
-
-const current = data.current;
-const daily = data.daily;
-
-let html = `
-<div class="weather-block">
-
-<h3>${flag} ${title}</h3>
-
-<p>🌡 Aktuell: ${current.temperature_2m} °C</p>
-<p>💧 Luftfeuchtigkeit: ${current.relative_humidity_2m}%</p>
-<p>💨 Wind: ${current.wind_speed_10m} km/h</p>
-
-<div class="forecast">
+let html=`
+<p><b>Aktuell:</b> ${data.current.temperature_2m}°C</p>
+<p>Luftfeuchtigkeit: ${data.current.relative_humidity_2m}%</p>
+<p>Wind: ${data.current.wind_speed_10m} km/h</p>
 `;
 
 for(let i=0;i<3;i++){
 
 html += `
-<div class="forecast-day">
-<b>${new Date(daily.time[i]).toLocaleDateString('de-DE',{
-weekday:'short'
-})}</b><br>
-⬆ ${daily.temperature_2m_max[i]}°<br>
-⬇ ${daily.temperature_2m_min[i]}°<br>
-🌧 ${daily.precipitation_probability_max[i]}%
+<div class="weather-day">
+<b>${data.daily.time[i]}</b><br>
+⬆ ${data.daily.temperature_2m_max[i]}°C<br>
+⬇ ${data.daily.temperature_2m_min[i]}°C
 </div>
 `;
-}
-
-html += '</div></div>';
-
-document.getElementById(target).innerHTML = html;
 
 }
 
-catch(e){
+document.getElementById(target).innerHTML=html;
 
-document.getElementById(target).innerHTML =
-"Wetter nicht verfügbar";
+}
+catch(err){
+
+document.getElementById(target).innerHTML=
+"Wetterdaten nicht verfügbar";
 
 }
 
 }
 
 
-loadLocationWeather(
+weather(
 51.26,
 6.55,
-"willich",
-"Willich",
-"🇩🇪"
+"willich"
 );
 
-loadLocationWeather(
+weather(
 39.54,
 2.39,
-"andratx",
-"Port d'Andratx",
-"🇪🇸"
+"andratx"
 );
 
+</script>
 
-setInterval(() => {
-
-loadLocationWeather(
-51.26,
-6.55,
-"willich",
-"Willich",
+</body>
+</html>
