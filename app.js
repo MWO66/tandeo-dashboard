@@ -1,4 +1,4 @@
-function updateClock() {
+function updateClock(){
 
     const now = new Date();
 
@@ -6,40 +6,44 @@ function updateClock() {
         now.toLocaleTimeString("de-DE");
 
     document.getElementById("date").innerHTML =
-        now.toLocaleDateString("de-DE", {
-            weekday: "long",
-            day: "2-digit",
-            month: "long",
-            year: "numeric"
+        now.toLocaleDateString("de-DE",{
+            weekday:"long",
+            day:"2-digit",
+            month:"long",
+            year:"numeric"
         });
+
 }
 
-setInterval(updateClock, 1000);
+setInterval(updateClock,1000);
 updateClock();
 
-function greeting() {
+
+function greeting(){
 
     const hour = new Date().getHours();
 
-    let text = "👋 Guten Tag Marcus";
+    let message = "👋 Guten Tag Marcus";
 
     if(hour < 12){
-        text = "☀️ Guten Morgen Marcus";
-    } else if(hour >= 18){
-        text = "🌙 Guten Abend Marcus";
+        message = "☀️ Guten Morgen Marcus";
+    }
+    else if(hour >= 18){
+        message = "🌙 Guten Abend Marcus";
     }
 
-    document.getElementById("welcome").innerHTML = text;
+    document.getElementById("welcome").innerHTML = message;
 }
 
 greeting();
 
-async function loadWeather(lat, lon, target){
+
+async function loadWeather(lat,lon,target){
 
     try{
 
         const response = await fetch(
-            `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&forecast_days=5`
+            `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,wind_direction_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset,uv_index_max&forecast_days=5`
         );
 
         const data = await response.json();
@@ -49,6 +53,17 @@ async function loadWeather(lat, lon, target){
             <p>😊 Gefühlt: ${data.current.apparent_temperature}°C</p>
             <p>💧 Luftfeuchtigkeit: ${data.current.relative_humidity_2m}%</p>
             <p>💨 Wind: ${data.current.wind_speed_10m} km/h</p>
+            <p>🧭 Windrichtung: ${data.current.wind_direction_10m}°</p>
+
+            <p>🌅 Sonnenaufgang:
+            ${new Date(data.daily.sunrise[0]).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}
+            </p>
+
+            <p>🌇 Sonnenuntergang:
+            ${new Date(data.daily.sunset[0]).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}
+            </p>
+
+            <p>☀️ UV-Index: ${data.daily.uv_index_max[0]}</p>
         `;
 
         for(let i=0;i<5;i++){
@@ -57,20 +72,23 @@ async function loadWeather(lat, lon, target){
             <div class="weather-day">
                 <strong>${data.daily.time[i]}</strong><br>
                 ⬆ ${data.daily.temperature_2m_max[i]}°C<br>
-                ⬇ ${data.daily.temperature_2m_min[i]}°C
-            </div>`;
+                ⬇ ${data.daily.temperature_2m_min[i]}°C<br>
+                🌧 ${data.daily.precipitation_probability_max[i]}%
+            </div>
+            `;
         }
 
         document.getElementById(target).innerHTML = html;
 
     }
-    catch(err){
+    catch(error){
 
         document.getElementById(target).innerHTML =
             "Wetterdaten konnten nicht geladen werden.";
 
-        console.error(err);
+        console.error(error);
     }
+
 }
 
 loadWeather(51.26,6.55,"willich");
