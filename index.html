@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>TANDEO Dashboard</title>
+
+<style>
+
+:root{
+    --bg1:#0f172a;
+    --bg2:#0c4a6e;
+    --card:rgba(255,255,255,0.08);
+    --border:rgba(255,255,255,0.1);
+    --text:#ffffff;
+    --accent:#0094ff;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:"Segoe UI",sans-serif;
+    color:var(--text);
+    min-height:100vh;
+    background:linear-gradient(135deg,var(--bg1),#1e293b,var(--bg2));
+    padding:20px;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+h1{
+    font-size:2rem;
+}
+
+#clock{
+    font-size:2rem;
+    font-weight:600;
+}
+
+#date{
+    opacity:.8;
+}
+
+.search input{
+    width:100%;
+    padding:18px;
+    border:none;
+    border-radius:16px;
+    margin-bottom:20px;
+    font-size:16px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(380px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:var(--card);
+    backdrop-filter:blur(20px);
+    border:1px solid var(--border);
+    border-radius:24px;
+    padding:20px;
+}
+
+.card h2{
+    margin-bottom:15px;
+    color:#7dd3fc;
+}
+
+.weather-block{
+    margin-bottom:15px;
+    padding-bottom:15px;
+    border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+.forecast{
+    display:flex;
+    gap:10px;
+    margin-top:10px;
+}
+
+.forecast-day{
+    flex:1;
+    background:rgba(255,255,255,.08);
+    padding:10px;
+    border-radius:10px;
+    text-align:center;
+}
+
+.links{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+.links a{
+    text-decoration:none;
+    color:white;
+    background:#334155;
+    padding:12px;
+    border-radius:10px;
+    text-align:center;
+}
+
+.links a:hover{
+    background:#475569;
+}
+
+.news-list{
+    list-style:none;
+}
+
+.news-list li{
+    padding:8px 0;
+    border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.news-list a{
+    color:white;
+    text-decoration:none;
+}
+
+.news-list a:hover{
+    color:#7dd3fc;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+
+<h1>🏢 TANDEO DASHBOARD</h1>
+
+<div>
+<div id="clock"></div>
+<div id="date"></div>
+</div>
+
+</div>
+
+<div class="search">
+<input
+placeholder="Mit Bing suchen ..."
+onkeypress="
+if(event.key==='Enter'){
+window.open(
+'https://www.bing.com/search?q='+
+encodeURIComponent(this.value),
+'_blank'
+);
+}">
+</div>
+
+<div class="grid">
+
+<div class="card">
+<h2>🌤 Wetter</h2>
+
+<div id="willich">
+Lade Wetter ...
+</div>
+
+<br>
+
+<div id="andratx">
+Lade Wetter ...
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>🛡 Microsoft Administration</h2>
+
+<div class="links">
+
+<a href="https://admin.microsoft.com" target="_blank">
+Admin Center
+</a>
+
+<a href="https://entra.microsoft.com" target="_blank">
+Entra
+</a>
+
+<a href="https://intune.microsoft.com" target="_blank">
+Intune
+</a>
+
+<a href="https://security.microsoft.com" target="_blank">
+Defender
+</a>
+
+<a href="https://compliance.microsoft.com" target="_blank">
+Compliance
+</a>
+
+<a href="https://purview.microsoft.com" target="_blank">
+Purview
+</a>
+
+</div>
+
+</div>
+
+
+<div class="card">
+<h2>🏛 Politik</h2>
+<ul id="politik" class="news-list">
+<li>Lade Schlagzeilen ...</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>💶 Wirtschaft</h2>
+<ul id="wirtschaft" class="news-list">
+<li>Lade Schlagzeilen ...</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>⚽ Sport</h2>
+<ul id="sport" class="news-list">
+<li>Lade Schlagzeilen ...</li>
+</ul>
+</div>
+
+</div>
+
+<script>
+
+function updateClock(){
+
+const now = new Date();
+
+document.getElementById("clock").innerHTML =
+now.toLocaleTimeString("de-DE");
+
+document.getElementById("date").innerHTML =
+now.toLocaleDateString("de-DE",{
+weekday:"long",
+day:"2-digit",
+month:"long",
+year:"numeric"
+});
+
+}
+
+setInterval(updateClock,1000);
+updateClock();
+
+
+async function loadLocationWeather(
+lat,
+lon,
+target,
+title,
+flag
+){
+
+try{
+
+const url =
+`https://api.open-meteo.com/v1/forecast
+?latitude=${lat}
+&longitude=${lon}
+&current=temperature_2m,relative_humidity_2m,wind_speed_10m
+&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max
+&forecast_days=3`
+.replace(/\s/g,'');
+
+const response = await fetch(url);
+
+const data = await response.json();
+
+const current = data.current;
+const daily = data.daily;
+
+let html = `
+<div class="weather-block">
+
+<h3>${flag} ${title}</h3>
+
+<p>🌡 Aktuell: ${current.temperature_2m} °C</p>
+<p>💧 Luftfeuchtigkeit: ${current.relative_humidity_2m}%</p>
+<p>💨 Wind: ${current.wind_speed_10m} km/h</p>
+
+<div class="forecast">
+`;
+
+for(let i=0;i<3;i++){
+
+html += `
+<div class="forecast-day">
+<b>${new Date(daily.time[i]).toLocaleDateString('de-DE',{
+weekday:'short'
+})}</b><br>
+⬆ ${daily.temperature_2m_max[i]}°<br>
+⬇ ${daily.temperature_2m_min[i]}°<br>
+🌧 ${daily.precipitation_probability_max[i]}%
+</div>
+`;
+}
+
+html += '</div></div>';
+
+document.getElementById(target).innerHTML = html;
+
+}
+
+catch(e){
+
+document.getElementById(target).innerHTML =
+"Wetter nicht verfügbar";
+
+}
+
+}
+
+
+loadLocationWeather(
+51.26,
+6.55,
+"willich",
+"Willich",
+"🇩🇪"
+);
+
+loadLocationWeather(
+39.54,
+2.39,
+"andratx",
+"Port d'Andratx",
+"🇪🇸"
+);
+
+
+setInterval(() => {
+
+loadLocationWeather(
+51.26,
+6.55,
+"willich",
+"Willich",
