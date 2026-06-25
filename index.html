@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TANDEO Briefing</title>
+<style>
+  :root{
+    --navy:#1A3550; --teal:#0A8B7F; --sand:#F5F0E8;
+    --navy-soft:#23425f; --line:#e3dccd; --ink:#22303d; --muted:#6c7a86;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--sand); color:var(--ink); line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit; text-decoration:none}
+  header{
+    background:var(--navy); color:#fff; padding:18px 28px;
+    display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  }
+  .brand{font-size:22px; font-weight:700; letter-spacing:.5px}
+  .brand .tan{color:#fff} .brand .deo{color:var(--teal)}
+  .brand .sub{font-size:13px; font-weight:400; color:#b9c4ce; margin-left:12px}
+  .clock{font-size:14px; color:#cdd6de; font-variant-numeric:tabular-nums}
+  main{max-width:1280px; margin:0 auto; padding:22px}
+
+  /* WEATHER */
+  .weather-row{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:26px}
+  @media(max-width:760px){.weather-row{grid-template-columns:1fr}}
+  .wcard{
+    background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden;
+    box-shadow:0 1px 3px rgba(26,53,80,.06);
+  }
+  .wtop{
+    background:linear-gradient(135deg,var(--navy),var(--navy-soft));
+    color:#fff; padding:16px 20px; display:flex; align-items:center; justify-content:space-between;
+  }
+  .wtop .loc{font-size:17px; font-weight:600}
+  .wtop .loc small{display:block; font-weight:400; color:#aebbc6; font-size:12px; margin-top:2px}
+  .wnow{display:flex; align-items:center; gap:14px; padding:18px 20px}
+  .wicon{font-size:46px; line-height:1}
+  .wtemp{font-size:42px; font-weight:700; color:var(--navy); font-variant-numeric:tabular-nums}
+  .wmeta{font-size:13px; color:var(--muted); margin-top:2px}
+  .wmeta b{color:var(--ink); font-weight:600}
+  .wfore{display:grid; grid-template-columns:repeat(5,1fr); border-top:1px solid var(--line)}
+  .wday{padding:12px 6px; text-align:center; border-right:1px solid var(--line)}
+  .wday:last-child{border-right:none}
+  .wday .d{font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.3px}
+  .wday .i{font-size:24px; margin:6px 0}
+  .wday .t{font-size:13px; font-variant-numeric:tabular-nums}
+  .wday .t .hi{font-weight:700; color:var(--navy)}
+  .wday .t .lo{color:var(--muted)}
+
+  /* NEWS */
+  .news-grid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:18px}
+  @media(max-width:980px){.news-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:640px){.news-grid{grid-template-columns:1fr}}
+  .col-title{
+    font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px;
+    color:var(--teal); padding:0 2px 8px; border-bottom:2px solid var(--teal); margin-bottom:6px;
+  }
+  .src{background:#fff; border:1px solid var(--line); border-radius:12px; margin-bottom:14px; overflow:hidden}
+  .src h3{
+    font-size:13px; font-weight:700; color:var(--navy); padding:10px 14px;
+    background:var(--sand); border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;
+  }
+  .src h3 .badge{font-size:10px; font-weight:600; color:var(--muted); text-transform:none; letter-spacing:0}
+  .src ul{list-style:none}
+  .src li{border-top:1px solid var(--line)}
+  .src li:first-child{border-top:none}
+  .src li a{display:block; padding:9px 14px; font-size:13.5px; transition:background .12s}
+  .src li a:hover{background:#f3f7f6}
+  .src li a .meta{display:block; font-size:11px; color:var(--muted); margin-top:2px}
+  .loading,.error{padding:12px 14px; font-size:12.5px; color:var(--muted)}
+  .error{color:#a23b3b}
+  footer{text-align:center; padding:20px; font-size:12px; color:var(--muted)}
+  .refresh{
+    background:var(--teal); color:#fff; border:none; border-radius:8px; padding:7px 14px;
+    font-size:13px; font-weight:600; cursor:pointer; margin-left:14px;
+  }
+  .refresh:hover{background:#097a6f}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><span class="tan">TAN</span><span class="deo">DEO</span><span class="sub">Briefing</span></div>
+  <div><span class="clock" id="clock"></span><button class="refresh" onclick="loadAll()">Aktualisieren</button></div>
+</header>
+
+<main>
+  <section class="weather-row">
+    <div class="wcard" id="w-willich">
+      <div class="wtop"><div class="loc">Willich<small>Nordrhein-Westfalen, DE</small></div></div>
+      <div class="wnow"><div class="loading">Lade Wetter…</div></div>
+    </div>
+    <div class="wcard" id="w-andratx">
+      <div class="wtop"><div class="loc">Port d'Andratx<small>Mallorca, ES</small></div></div>
+      <div class="wnow"><div class="loading">Lade Wetter…</div></div>
+    </div>
+  </section>
+
+  <section class="news-grid" id="news"></section>
+</main>
+
+<footer>TANDEO Briefing · Wetter: Open-Meteo · News via RSS · zuletzt aktualisiert <span id="updated">–</span></footer>
+
+<script>
+/* ---------------- CONFIG ---------------- */
+const LOCATIONS = [
+  {id:"w-willich", lat:51.2636, lon:6.5503, tz:"Europe/Berlin"},
+  {id:"w-andratx", lat:39.5413, lon:2.3870, tz:"Europe/Madrid"}
+];
+
+const COLUMNS = [
+  {title:"Wirtschaft", sources:[
+    {name:"Handelsblatt", url:"https://www.handelsblatt.com/contentexport/feed/wirtschaft"},
+    {name:"NZZ Wirtschaft", url:"https://www.nzz.ch/wirtschaft.rss"},
+    {name:"WELT Wirtschaft", url:"https://www.welt.de/feeds/section/wirtschaft.rss"}
+  ]},
+  {title:"Politik", sources:[
+    {name:"tagesschau", url:"https://www.tagesschau.de/index~rss2.xml"},
+    {name:"NZZ International", url:"https://www.nzz.ch/international.rss"},
+    {name:"WELT Politik", url:"https://www.welt.de/feeds/section/politik.rss"},
+    {name:"CNN World", url:"https://rss.cnn.com/rss/edition_world.rss"}
+  ]},
+  {title:"Sport", sources:[
+    {name:"kicker · Bundesliga", url:"https://newsfeed.kicker.de/news/bundesliga"},
+    {name:"Formel 1", url:"https://www.motorsport-total.de/rss/f1.xml"},
+    {name:"Golf Channel", url:"https://www.golfchannel.com/rss.xml"}
+  ]}
+];
+
+const PER_SOURCE = 5;
+const PROXY = "https://api.allorigins.win/raw?url=";
+
+/* ---------------- WEATHER ---------------- */
+const WMO = {
+  0:["☀️","Klar"],1:["🌤️","Heiter"],2:["⛅","Wolkig"],3:["☁️","Bedeckt"],
+  45:["🌫️","Nebel"],48:["🌫️","Reifnebel"],
+  51:["🌦️","Niesel"],53:["🌦️","Niesel"],55:["🌧️","Niesel"],
+  61:["🌧️","Regen"],63:["🌧️","Regen"],65:["🌧️","Starkregen"],
+  71:["🌨️","Schnee"],73:["🌨️","Schnee"],75:["❄️","Starkschnee"],
+  80:["🌦️","Schauer"],81:["🌧️","Schauer"],82:["⛈️","Starkschauer"],
+  95:["⛈️","Gewitter"],96:["⛈️","Gewitter"],99:["⛈️","Hagel"]
+};
+const wIcon = c => (WMO[c]||["🌡️","—"])[0];
+const wText = c => (WMO[c]||["","—"])[1];
+const DAYS = ["So","Mo","Di","Mi","Do","Fr","Sa"];
+
+async function loadWeather(loc){
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}`
+    + `&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m`
+    + `&daily=weather_code,temperature_2m_max,temperature_2m_min`
+    + `&timezone=${encodeURIComponent(loc.tz)}&forecast_days=5`;
+  const card = document.getElementById(loc.id);
+  try{
+    const r = await fetch(url);
+    if(!r.ok) throw new Error(r.status);
+    const d = await r.json();
+    const c = d.current;
+    const now = `
+      <div class="wnow">
+        <div class="wicon">${wIcon(c.weather_code)}</div>
+        <div>
+          <div class="wtemp">${Math.round(c.temperature_2m)}°</div>
+          <div class="wmeta">${wText(c.weather_code)} · gefühlt <b>${Math.round(c.apparent_temperature)}°</b></div>
+          <div class="wmeta">💧 ${c.relative_humidity_2m}% · 💨 ${Math.round(c.wind_speed_10m)} km/h</div>
+        </div>
+      </div>`;
+    let fore = '<div class="wfore">';
+    for(let i=0;i<d.daily.time.length;i++){
+      const dt = new Date(d.daily.time[i]+"T12:00");
+      fore += `<div class="wday">
+        <div class="d">${i===0?"Heute":DAYS[dt.getDay()]}</div>
+        <div class="i">${wIcon(d.daily.weather_code[i])}</div>
+        <div class="t"><span class="hi">${Math.round(d.daily.temperature_2m_max[i])}°</span>
+          <span class="lo">${Math.round(d.daily.temperature_2m_min[i])}°</span></div>
+      </div>`;
+    }
+    fore += '</div>';
+    card.querySelector('.wnow').outerHTML = now + fore;
+  }catch(e){
+    card.querySelector('.wnow').innerHTML = `<div class="error">Wetter nicht erreichbar (${e.message})</div>`;
+  }
+}
+
+/* ---------------- NEWS ---------------- */
+function timeAgo(date){
+  if(!date) return "";
+  const s = Math.floor((Date.now()-date)/1000);
+  if(s<3600) return Math.max(1,Math.floor(s/60))+" Min";
+  if(s<86400) return Math.floor(s/3600)+" Std";
+  return Math.floor(s/86400)+" Tg";
+}
+
+async function loadSource(src, container){
+  const box = document.createElement('div');
+  box.className = 'src';
+  box.innerHTML = `<h3>${src.name}<span class="badge">…</span></h3><div class="loading">Lade…</div>`;
+  container.appendChild(box);
+  try{
+    const r = await fetch(PROXY + encodeURIComponent(src.url));
+    if(!r.ok) throw new Error(r.status);
+    const txt = await r.text();
+    const xml = new DOMParser().parseFromString(txt, "text/xml");
+    let items = [...xml.querySelectorAll("item")];
+    if(items.length===0) items = [...xml.querySelectorAll("entry")]; // Atom
+    if(items.length===0) throw new Error("leer");
+    let html = '<ul>';
+    items.slice(0,PER_SOURCE).forEach(it=>{
+      const title = (it.querySelector("title")?.textContent||"").trim();
+      let link = it.querySelector("link")?.textContent?.trim();
+      if(!link){ const l = it.querySelector("link"); link = l?.getAttribute("href")||"#"; }
+      const dRaw = it.querySelector("pubDate")?.textContent || it.querySelector("updated")?.textContent || it.querySelector("published")?.textContent;
+      const d = dRaw ? new Date(dRaw) : null;
+      const ago = d && !isNaN(d) ? timeAgo(d) : "";
+      html += `<li><a href="${link}" target="_blank" rel="noopener">${title}${ago?`<span class="meta">${ago}</span>`:''}</a></li>`;
+    });
+    html += '</ul>';
+    box.innerHTML = `<h3>${src.name}<span class="badge">${Math.min(items.length,PER_SOURCE)}</span></h3>` + html;
+  }catch(e){
+    box.innerHTML = `<h3>${src.name}<span class="badge">!</span></h3><div class="error">Quelle gerade nicht erreichbar</div>`;
+  }
+}
+
+async function loadNews(){
+  const grid = document.getElementById('news');
+  grid.innerHTML = '';
+  COLUMNS.forEach(col=>{
+    const c = document.createElement('div');
+    c.innerHTML = `<div class="col-title">${col.title}</div>`;
+    grid.appendChild(c);
+    col.sources.forEach(src=> loadSource(src, c));
+  });
+}
+
+/* ---------------- CLOCK + INIT ---------------- */
+function tick(){
+  const n = new Date();
+  document.getElementById('clock').textContent =
+    n.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'long'}) + ' · ' +
+    n.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+}
+function loadAll(){
+  LOCATIONS.forEach(loadWeather);
+  loadNews();
+  document.getElementById('updated').textContent =
+    new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+}
+tick(); setInterval(tick,30000);
+loadAll();
+setInterval(loadAll, 15*60*1000); // alle 15 Min
+</script>
+</body>
+</html>
