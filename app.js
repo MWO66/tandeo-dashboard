@@ -1,4 +1,4 @@
-function updateClock(){
+function updateClock() {
 
     const now = new Date();
 
@@ -6,29 +6,27 @@ function updateClock(){
         now.toLocaleTimeString("de-DE");
 
     document.getElementById("date").innerHTML =
-        now.toLocaleDateString("de-DE",{
-            weekday:"long",
-            day:"2-digit",
-            month:"long",
-            year:"numeric"
+        now.toLocaleDateString("de-DE", {
+            weekday: "long",
+            day: "2-digit",
+            month: "long",
+            year: "numeric"
         });
-
 }
 
-setInterval(updateClock,1000);
+setInterval(updateClock, 1000);
 updateClock();
 
-
-function greeting(){
+function greeting() {
 
     const hour = new Date().getHours();
 
     let message = "👋 Guten Tag Marcus";
 
-    if(hour < 12){
+    if (hour < 12) {
         message = "☀️ Guten Morgen Marcus";
     }
-    else if(hour >= 18){
+    else if (hour >= 18) {
         message = "🌙 Guten Abend Marcus";
     }
 
@@ -37,16 +35,40 @@ function greeting(){
 
 greeting();
 
+let willichTemp = "--";
+let andratxTemp = "--";
 
-async function loadWeather(lat,lon,target){
+function updateQuickWeather() {
 
-    try{
+    const element =
+        document.getElementById("quick-weather");
+
+    if (element) {
+
+        element.innerHTML =
+            `🇩🇪 ${willichTemp}°C | 🇪🇸 ${andratxTemp}°C`;
+    }
+}
+
+async function loadWeather(lat, lon, target) {
+
+    try {
 
         const response = await fetch(
             `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,wind_direction_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset,uv_index_max&forecast_days=5`
         );
 
         const data = await response.json();
+
+        if (target === "willich") {
+            willichTemp = data.current.temperature_2m;
+        }
+
+        if (target === "andratx") {
+            andratxTemp = data.current.temperature_2m;
+        }
+
+        updateQuickWeather();
 
         let html = `
             <p>🌡 Aktuell: ${data.current.temperature_2m}°C</p>
@@ -56,40 +78,64 @@ async function loadWeather(lat,lon,target){
             <p>🧭 Windrichtung: ${data.current.wind_direction_10m}°</p>
 
             <p>🌅 Sonnenaufgang:
-            ${new Date(data.daily.sunrise[0]).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}
+            ${new Date(data.daily.sunrise[0]).toLocaleTimeString('de-DE',{
+                hour:'2-digit',
+                minute:'2-digit'
+            })}
             </p>
 
             <p>🌇 Sonnenuntergang:
-            ${new Date(data.daily.sunset[0]).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}
+            ${new Date(data.daily.sunset[0]).toLocaleTimeString('de-DE',{
+                hour:'2-digit',
+                minute:'2-digit'
+            })}
             </p>
 
-            <p>☀️ UV-Index: ${data.daily.uv_index_max[0]}</p>
+            <p>☀️ UV-Index:
+            ${data.daily.uv_index_max[0]}
+            </p>
         `;
 
-        for(let i=0;i<5;i++){
+        for (let i = 0; i < 5; i++) {
 
             html += `
-            <div class="weather-day">
-                <strong>${data.daily.time[i]}</strong><br>
-                ⬆ ${data.daily.temperature_2m_max[i]}°C<br>
-                ⬇ ${data.daily.temperature_2m_min[i]}°C<br>
-                🌧 ${data.daily.precipitation_probability_max[i]}%
-            </div>
+                <div class="weather-day">
+
+                    <strong>
+                    ${new Date(data.daily.time[i]).toLocaleDateString(
+                        'de-DE',
+                        { weekday: 'short' }
+                    )}
+                    </strong>
+
+                    <br>
+
+                    ⬆ ${data.daily.temperature_2m_max[i]}°C
+
+                    <br>
+
+                    ⬇ ${data.daily.temperature_2m_min[i]}°C
+
+                    <br>
+
+                    🌧 ${data.daily.precipitation_probability_max[i]}%
+
+                </div>
             `;
         }
 
-        document.getElementById(target).innerHTML = html;
+        document.getElementById(target).innerHTML =
+            html;
 
     }
-    catch(error){
+    catch (error) {
 
         document.getElementById(target).innerHTML =
             "Wetterdaten konnten nicht geladen werden.";
 
         console.error(error);
     }
-
 }
 
-loadWeather(51.26,6.55,"willich");
-loadWeather(39.54,2.39,"andratx");
+loadWeather(51.26, 6.55, "willich");
+loadWeather(39.54, 2.39, "andratx");
